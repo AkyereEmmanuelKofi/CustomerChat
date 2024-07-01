@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chat-container { max-width: 400px; margin: 50px auto; border: 1px solid #ccc; padding: 10px; border-radius: 10px; }
+        .chat-box { height: 300px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; }
+        .chat-message { margin: 10px 0; }
+        .user-message { text-align: right; }
+        .bot-message { text-align: left; }
+        input[type="text"] { width: calc(100% - 22px); padding: 10px; margin-top: 10px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <!-- Messages will be appended here -->
+        </div>
+        <input type="text" id="userInput" placeholder="Type your message here...">
+    </div>
+
+    <script>
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                let message = e.target.value;
+                if (message.trim() !== '') {
+                    displayMessage(message, 'user');
+                    fetchBotResponse(message);
+                    e.target.value = '';
+                }
+            }
+        });
+
+        function displayMessage(message, sender) {
+            let messageElement = document.createElement('div');
+            messageElement.className = 'chat-message ' + (sender === 'user' ? 'user-message' : 'bot-message');
+            messageElement.innerText = message;
+            document.getElementById('chatBox').appendChild(messageElement);
+        }
+
+        async function fetchBotResponse(userMessage) {
+            try {
+                let response = await fetch('/getAnswer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: userMessage })
+                });
+                let data = await response.json();
+                displayMessage(data.answer, 'bot');
+            } catch (error) {
+                displayMessage('Sorry, something went wrong.', 'bot');
+            }
+        }
+    </script>
+</body>
+</html>
