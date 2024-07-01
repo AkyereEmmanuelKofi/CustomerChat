@@ -1,0 +1,13 @@
+{
+  "name": "customer-service-chatbot",
+  "version": "1.0.0",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "axios": "^0.21.1"
+  }
+}
